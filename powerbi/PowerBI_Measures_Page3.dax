@@ -1,0 +1,44 @@
+// ============================================================================
+// PowerBI_Measures_Page3.dax   -   Page 3: Service & Ownership Experience
+// Prerequisite: Page 1 and Page 2 measures already exist.
+// Create each measure in the "_Measures" table: Modeling > New measure.
+// ============================================================================
+
+// Share of respondents in context who say they have no service information
+// Format: Percentage, 1 decimal
+No Service Info % =
+DIVIDE (
+    CALCULATE ( [Total Respondents], Survey[Service_Info_Known] = "No" ),
+    [Total Respondents]
+)
+
+// Share of respondents in context who expect resale value to matter
+// Format: Percentage, 1 decimal
+Resale Matters % =
+DIVIDE (
+    CALCULATE ( [Total Respondents], Survey[Resale_Expectation] = "Yes" ),
+    [Total Respondents]
+)
+
+// Complaints ranked so the Pareto chart's line sums correctly left to right
+Complaint Rank =
+RANKX ( ALLSELECTED ( Survey[Ownership_Complaint] ), [Total Respondents], , DESC, Dense )
+
+// Running total of complaint share, used as the cumulative-% line in the Pareto chart
+Cumulative Complaint % =
+VAR CurrentRank = [Complaint Rank]
+VAR RunningTotal =
+    SUMX (
+        FILTER (
+            ALLSELECTED ( Survey[Ownership_Complaint] ),
+            [Complaint Rank] <= CurrentRank
+        ),
+        [Total Respondents]
+    )
+VAR GrandTotal = CALCULATE ( [Total Respondents], ALLSELECTED ( Survey[Ownership_Complaint] ) )
+RETURN
+    DIVIDE ( RunningTotal, GrandTotal )
+
+// One-line, dealer-neutral takeaway for the page subtitle
+Service Note =
+"Each dealer's complaint theme and reason for choice do not overlap in this sample - read dealer comparisons as indicative, not causal."

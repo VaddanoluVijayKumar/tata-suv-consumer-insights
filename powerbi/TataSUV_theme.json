@@ -1,0 +1,22 @@
+{
+  "name": "TataSUV_Portfolio",
+  "dataColors": [
+    "#1F3864",
+    "#2E75B6",
+    "#ED7D31",
+    "#70AD47",
+    "#7F7F7F",
+    "#FFC000",
+    "#9DC3E6",
+    "#C55A11"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#252423",
+  "tableAccent": "#1F3864",
+  "good": "#70AD47",
+  "neutral": "#FFC000",
+  "bad": "#C0504D",
+  "maximum": "#1F3864",
+  "center": "#9DC3E6",
+  "minimum": "#EEF2F8"
+}

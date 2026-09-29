@@ -1,0 +1,58 @@
+// ============================================================================
+// PowerBI_Measures_Page1.dax   -   Page 1: Executive Overview
+// Create each measure in the "_Measures" table: Modeling > New measure,
+// then paste ONE block at a time (the name before the = becomes the measure name).
+// Table name assumed: Survey  (the query loaded from dbo.vw_survey_enriched)
+// ============================================================================
+
+// ---------- Core counts and shares ----------
+Total Respondents = COUNTROWS ( Survey )
+
+EV Share % = DIVIDE ( SUM ( Survey[is_ev] ), [Total Respondents] )
+
+Automatic Share % = DIVIDE ( SUM ( Survey[is_automatic] ), [Total Respondents] )
+
+Loan Share % = DIVIDE ( SUM ( Survey[is_loan] ), [Total Respondents] )
+
+Premium Share % =
+DIVIDE (
+    CALCULATE ( [Total Respondents], Survey[model_tier] = "Premium" ),
+    [Total Respondents]
+)
+
+// Share of the respondents currently selected by the slicers (used for the model bar labels)
+Model Share % =
+DIVIDE (
+    [Total Respondents],
+    CALCULATE ( [Total Respondents], ALLSELECTED ( Survey[Model_Interest] ) )
+)
+
+// ---------- Dynamic headline measures (cards / takeaway panel) ----------
+Top Model =
+CONCATENATEX (
+    TOPN ( 1, VALUES ( Survey[Model_Interest] ), [Total Respondents], DESC ),
+    Survey[Model_Interest],
+    ", "
+)
+
+Top Complaint =
+CONCATENATEX (
+    TOPN ( 1, VALUES ( Survey[Ownership_Complaint] ), [Total Respondents], DESC ),
+    Survey[Ownership_Complaint],
+    ", "
+)
+
+EV Peak Text =
+VAR t = TOPN ( 1, ALLSELECTED ( Survey[Age_Group] ), [EV Share %], DESC )
+VAR g = CONCATENATEX ( t, Survey[Age_Group], ", " )
+VAR v = MAXX ( t, [EV Share %] )
+RETURN
+    "EV interest peaks in the " & g & " age group at " & FORMAT ( v, "0%" )
+
+Premium Income Text =
+VAR hi = CALCULATE ( [Premium Share %], Survey[Income_Band] = "Above 2L", ALLSELECTED ( Survey[Income_Band] ) )
+VAR lo = CALCULATE ( [Premium Share %], Survey[Income_Band] = "50K-1L", ALLSELECTED ( Survey[Income_Band] ) )
+RETURN
+    "Premium-tier interest is " & FORMAT ( hi, "0%" ) & " in the Above 2L band vs " & FORMAT ( lo, "0%" ) & " in the 50K-1L band"
+
+Sample Note = "Convenience sample, Hyderabad. Results are directional, not market-wide."

@@ -1,0 +1,33 @@
+// ============================================================================
+// PowerBI_Measures_Page2.dax   -   Page 2: Customer Segments (+ hidden drill-through page)
+// Prerequisite: the Page 1 measures already exist (Total Respondents, EV Share %,
+// Automatic Share %, Loan Share %, Premium Share %, Top Model, Top Complaint).
+// Create each measure in the "_Measures" table: Modeling > New measure.
+// ============================================================================
+
+// Average budget position: 1 = Below 10L, 2 = 10L-18L, 3 = 18L-25L, 4 = Above 25L
+// Format: Decimal number, 2 decimals
+Avg Budget Index = AVERAGE ( Survey[Budget_Sort] )
+
+// Segment size as a share of everyone currently selected by the slicers
+// Format: Percentage, 1 decimal
+Segment Share % =
+DIVIDE (
+    [Total Respondents],
+    CALCULATE ( [Total Respondents], ALLSELECTED ( Survey ) )
+)
+
+// Most-used research channel within whatever is in context (a segment, a model, etc.)
+Top Channel =
+CONCATENATEX (
+    TOPN ( 1, VALUES ( Survey[Info_Source] ), [Total Respondents], DESC ),
+    Survey[Info_Source],
+    ", "
+)
+
+// Honesty flag shown next to small segments in the scorecard
+Small Sample Flag = IF ( [Total Respondents] < 30, "n<30 - indicative", "" )
+
+// Subtitle shown at the top of the page
+Segment Note =
+"Segments under 30 respondents are indicative only. Highway buyers all chose Premium-tier models, so purpose and model effects overlap."
