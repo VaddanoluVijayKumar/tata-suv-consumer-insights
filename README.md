@@ -44,7 +44,7 @@ tata-suv-consumer-insights/
 │   ├── Tata_SUV_Cleaned_Dataset.xlsx        # cleaning, data dictionary, reconciliation, quality log
 │   └── Tata_SUV_Analysis.xlsx               # executive summary + 5 analysis sheets, charts
 ├── powerbi/
-│   ├── TataSUV_Dashboard.pbix               # add this yourself — see Power BI below
+│   ├── TataSUV_Dashboard.pbix               
 │   ├── PowerBI_Measures_Page1.dax
 │   ├── PowerBI_Measures_Page2.dax
 │   ├── PowerBI_Measures_Page3.dax
@@ -52,7 +52,7 @@ tata-suv-consumer-insights/
 ├── business-case/
 │   └── Tata_SUV_Business_Case.pdf           # problem, stakeholders, KPIs, recommendations, user stories
 └── screenshots/
-    └── (add dashboard page screenshots here — see below)
+    
 ```
 
 ## How to reproduce
